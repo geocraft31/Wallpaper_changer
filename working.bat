@@ -40,7 +40,7 @@ cd ..
 REM get random wallpaper
 set /a rnd=%random% %%%i% + 1
 set random_wallpaper=!wallpapers_list[%rnd%]!
-REM echo %random_wallpaper%
+
 
 REM moved used wallpaper to correct folder
 cd used_image
@@ -57,8 +57,8 @@ for /f %%f in ('dir /b ^| find /v /c ""') do (
 
 move images\%random_wallpaper% used_image
 
-reg add "HKEY_CURRENT_USER\Control Panel\Desktop" /v Wallpaper /t REG_SZ /d %batch_path%\images\%random_wallpaper% /f
+reg add "HKEY_CURRENT_USER\Control Panel\Desktop" /v Wallpaper /t REG_SZ /d %batch_path%\used_image\%random_wallpaper% /f
 RUNDLL32.EXE USER32.DLL,UpdatePerUserSystemParameters
 
-
-exit /b
+pause
+exit
