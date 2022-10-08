@@ -60,5 +60,4 @@ move images\%random_wallpaper% used_image
 reg add "HKEY_CURRENT_USER\Control Panel\Desktop" /v Wallpaper /t REG_SZ /d %batch_path%\used_image\%random_wallpaper% /f
 RUNDLL32.EXE USER32.DLL,UpdatePerUserSystemParameters
 
-pause
 exit
