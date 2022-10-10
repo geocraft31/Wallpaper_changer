@@ -3,6 +3,38 @@ setlocal EnableDelayedExpansion
 
 color e0
 
+:ask_time
+
+echo How often do you want to change wallpaper
+set /p time=Minutes: 
+
+
+SET "var="&for /f "delims=0123456789" %%i in ("%time%") do set var=%%i
+if defined var (
+    echo You didn't enter a decimal number
+    echo try again
+    goto :ask_time
+) else (
+    echo %time%
+    if %time% EQU 0 (
+        echo You can't enter 0 minutes 
+        echo try again
+        goto :ask_time
+    )
+    if %time% GTR 166 (
+        echo The number is too big
+        echo Try again
+        goto :ask_time
+    )
+    echo timer set with a cooldown of %time% minutes
+)
+
+set /a time*=60
+
+set loop=0
+
+:start
+
 set batch_path=%cd%
 cd /D %batch_path%
 
@@ -31,10 +63,6 @@ if %i% neq %j% (
    goto :EOF
 )
 
-rem echo lists - BREAK
-for /L %%i in (1,1,%i%) do (
-    REM echo !index_list[%%i]!,!wallpapers_list[%%i]!
-)
 cd ..
 
 REM get random wallpaper
@@ -48,16 +76,24 @@ for /f %%f in ('dir /b ^| find /v /c ""') do (
     if %%f GTR 0 (
         for /f %%h in ('dir /b') do (
             cd ..
-            move used_image\%%h images
+            move used_image\%%h images >nul
             cd used_image
         )
     )
     cd ..
 )
 
-move images\%random_wallpaper% used_image
+move images\%random_wallpaper% used_image >nul
 
-reg add "HKEY_CURRENT_USER\Control Panel\Desktop" /v Wallpaper /t REG_SZ /d %batch_path%\used_image\%random_wallpaper% /f
-RUNDLL32.EXE USER32.DLL,UpdatePerUserSystemParameters
+reg add "HKEY_CURRENT_USER\Control Panel\Desktop" /v Wallpaper /t REG_SZ /d %batch_path%\used_image\%random_wallpaper% /f >nul
+RUNDLL32.EXE USER32.DLL,UpdatePerUserSystemParameters ,1 ,true
+
+
+set /a loop+=1
+echo The wallpaper has changed %loop% times
+
+TIMEOUT /T %time% /NOBREAK  >nul
+
+goto :start
 
 exit
