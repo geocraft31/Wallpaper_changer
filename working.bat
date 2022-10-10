@@ -35,7 +35,7 @@ set loop=0
 
 :start
 
-set batch_path=%cd%
+set batch_path=%~dp0
 cd /D %batch_path%
 
 cd images
